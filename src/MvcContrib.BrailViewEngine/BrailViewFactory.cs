@@ -48,14 +48,18 @@ namespace MvcContrib.ViewFactories
 
 	    public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
 	    {
-			var controller = controllerContext.RouteData.Values["controller"] as string;
-
-			string fullViewName = string.Concat(controller, "/", viewName);
-
-			IView view = _viewEngine.Process(fullViewName, masterName);
-
-			return new ViewEngineResult(view, this);
-        }
+	            if (!string.IsNullOrEmpty(masterName) && masterName.ToLower() == "site")
+	            {
+	                var controller = controllerContext.RouteData.Values["controller"] as string;
+	                string fullViewName = string.Concat(controller, "/", viewName);
+	                IView view = _viewEngine.Process(fullViewName, masterName);
+	                return new ViewEngineResult(view, this);
+	            }
+	            else
+	            {
+	                return new ViewEngineResult(new List<string>());
+	            }
+        	}
 
 	    public void ReleaseView(ControllerContext controllerContext, IView view)
 	    {
